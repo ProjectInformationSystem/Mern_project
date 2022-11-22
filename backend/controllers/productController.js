@@ -1,8 +1,8 @@
-const Product = require("../models/productModel")
+const Product = require("../models/productModel");
+const ErrorHander = require("../utils/errorhander");
 
 
 // Creating a Product - Admin 
-
 exports.createProduct = async(req,res,next)=>{
 
    const product = await Product.create(req.body);
@@ -13,8 +13,8 @@ exports.createProduct = async(req,res,next)=>{
    })
 }
 
-//Get All Products
 
+//Get All Products
 exports.getAllProducts = async (req,res) =>{
 
     const products = await Product.find();
@@ -27,16 +27,11 @@ exports.getAllProducts = async (req,res) =>{
 
 
 // Get Single Product Details
-
-
 exports.getProductDetails = async (req,res,next) =>{
     const product = await Product.findById(req.params.id);
 
     if(!product){
-        return res.status(500).json({
-            success:false,
-            message:"Product not found"
-        })
+        return next(new ErrorHander("Product not found",404));
     }
     res.status(200).json({
         success:true,
@@ -45,7 +40,6 @@ exports.getProductDetails = async (req,res,next) =>{
 }
 
 // Update Product - Admin
-
 exports.updateProduct = async (req,res,next) => {
     let product = await Product.findById(req.params.id);
 
@@ -67,8 +61,9 @@ exports.updateProduct = async (req,res,next) => {
     })
 }
 
-// Delete Product 
 
+
+// Delete Product 
 exports.deleteProduct = async (req,res,next) => {
     
     const product = await Product.findById(req.params.id);
